@@ -6,7 +6,7 @@ const {userSchema} = require("./userSchema")
 async function dbConnect(){
   try{
     await mongoose.connect(
-      `mongodb+srv://hugold:${process.env.DBPASSWORD}@projetopdw.26j89uu.mongodb.net/ProjetoSemestral?retryWrites=true`
+      `mongodb+srv://hugold:nR0VdnnummG3Uxhc@projetopdw.26j89uu.mongodb.net/ProjetoSemestral?retryWrites=true`
     );
 
     return mongoose
