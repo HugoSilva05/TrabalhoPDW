@@ -18,7 +18,7 @@ async function signupControl(user){
     if(user.role === undefined || user.role === ""){
       throw {status: 400, message: "Insira o tipo do usuário"}
     }
-    if(user.role == 1){
+    if(user.role === 1){
       if(user.occupation === undefined || user.occupation === ""){
         throw {status: 400, message: "Insira o cargo"}
       }
@@ -29,6 +29,9 @@ async function signupControl(user){
     }
     if(user.role === 0){
       return await userSingup(user)
+    }
+    if(user.role !== 0 && user.role === 1){
+      throw {status: 400, message: "Insira um tipo válido de usuário"}
     }
   } catch (err) {
     throw err
