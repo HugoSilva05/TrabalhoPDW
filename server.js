@@ -37,8 +37,8 @@ app.post("/users/login", async (req, res) => {
       return
     }
 
-    const {name, email, password} = req.body //Delimita os campos que podem ser enviados na requisição
-    const user = {name, email, password} //Utiliza os campos para um usuário/admin
+    const {username, email, password} = req.body //Delimita os campos que podem ser enviados na requisição
+    const user = {username, email, password} //Utiliza os campos para um usuário/admin
     
     let response = await loginControl(user)
     res.status(200).send(response)
@@ -57,8 +57,8 @@ app.post("/users/logout", async (req, res) => {
 app.put("/users/:id", async (req, res) => {
   try {
     let id = req.params.id
-    const {name, email, password} = req.body //Delimita os campos que podem ser enviados na requisição
-    const user = {name, email, password}
+    const {username, email, password} = req.body //Delimita os campos que podem ser enviados na requisição
+    const user = {username, email, password}
     let response = await editControl(id, user)
     res.status(200).send(response)
   } catch (err) {
@@ -81,8 +81,8 @@ app.delete("/users/:id", async (req, res) => {
 //Rota para criação de admins
 app.post("/admin/signup", async (req, res) => {
   try {
-    const {name, email, password, occupation} = req.body //Delimita os campos que podem ser enviados na requisição
-    const admin = {name, email, password, occupation} //Utiliza os campos para um usuário/admin
+    const {username, email, password, occupation} = req.body //Delimita os campos que podem ser enviados na requisição
+    const admin = {username, email, password, occupation} //Utiliza os campos para um usuário/admin
     let response = await signupControl(admin)
     res.status(201).send(response)
   } catch (err) {

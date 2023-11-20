@@ -9,8 +9,6 @@ let con
 async function userSingup(user){
   try {
     let usuario = new User(user);
-    usuario.status = true
-    usuario.role = 0
     con = await dbConnect();
     let response = await usuario.save();
     await con.connection.close();

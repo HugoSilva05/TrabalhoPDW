@@ -16,11 +16,13 @@ const userSchema = new Schema({
   },
   status: {
     type: Boolean,
-    required: true
+    required: true,
+    default: true
   },
   role: {
     type: Number,
-    required: true
+    required: true,
+    default: 0
   }
 }, {collection: "users", timestamps: true})
 
