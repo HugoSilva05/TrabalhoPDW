@@ -29,6 +29,6 @@ const adminSchema = new Schema({
       type: String,
       required: true
     }
-  }, {collection: "users", timestamps: true})
+  }, {collection: "admins", timestamps: true})
   
 module.exports = {adminSchema}
