@@ -9,6 +9,7 @@ const {delControl} = require('./src/controller/delControl')
 const {getUsersControl} = require('./src/controller/getUsersControl')
 const {itemRegisterControl} = require('./src/controller/itemRegisterControl')
 const {itemGet} = require('./src/model/itemGet')
+const {itemEditControl} = require('./src/controller/itemEditControl')
 
 const app = express();
 app.use(bodyParser.json());
@@ -187,8 +188,8 @@ app.post("/items", async (req, res) => {
     }
     tokenControl(token)
 
-    const {ID, title, author, category, price, description, status, editionDate, periodicity, sellerID} = req.body //Delimita os campos que podem ser enviados na requisição
-    const item = {ID, title, author, category, price, description, status, editionDate, periodicity, sellerID} //Utiliza os campos para um item
+    const {ID, title, author, category, price, description, editionDate, periodicity, sellerID} = req.body //Delimita os campos que podem ser enviados na requisição
+    const item = {ID, title, author, category, price, description, editionDate, periodicity, sellerID} //Utiliza os campos para um item
     
     let response = await itemRegisterControl(item)
 
@@ -257,10 +258,17 @@ app.put("/items/:id", async (req, res) => {
       message: "Token vazio!"
     }
     tokenControl(token)
+
+    let id = req.params.id
+    const {title, author, category, price, description, editionDate, periodicity, sellerID} = req.body //Delimita os campos que podem ser enviados na requisição
+    const item = {title, author, category, price, description, editionDate, periodicity, sellerID}
+    response = await itemEditControl(id, item)
     
     res.status(200).send(response)
   } catch (err) {
-    res.status(err.statusCode).send(err)
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
+    console.log(err)
   }
 })
 
