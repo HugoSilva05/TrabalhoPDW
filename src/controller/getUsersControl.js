@@ -1,5 +1,5 @@
 const {getUsers} = require("../model/getUsers")
-const {loginControl, sessionStatus} = require('./loginControl')
+const {loginControl, sessionStatus} = require('./userLoginControl')
 
 async function getUsersControl(){
   try {

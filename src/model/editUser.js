@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt")
 const {userSchema} = require("./userSchema")
 const {dbConnect} = require("./dbConnect")
 const User = mongoose.model("User", userSchema)
@@ -6,13 +7,18 @@ let con
 
 async function editUser(id, info){
   try {
+    info.password = bcrypt.hashSync(info.password, 10)
     con = await dbConnect();
-    response = await User.updateOne({_id: id}, info)
+    await User.updateOne({_id: id}, info)
     await con.connection.close();
-    return response;
+    return {
+      statusCode: 200,
+      message: `Usuário ${id} modificado`,
+      data: info
+    };
   } catch (err) {
-    await con.connection.close();
-    if (err.path == "_id") throw {status: 400, message: "Usuário não encontrado"}
+    if(con) await con.connection.close();
+    if(err.path == "_id") throw {statusCode: 400, message: "Usuário não encontrado"}
     throw err;
   }
 }

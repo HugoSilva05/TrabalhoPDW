@@ -1,9 +1,17 @@
-const {delUser} = require("./src/model/delUser")
-const {delControl} = require("./src/controller/delControl")
+require('dotenv').config();
+const {login} = require("./src/model/login")
+const bcrypt = require("bcrypt")
 
 async function run() {
   try{
-    response = await delControl("6521a4f1e15380d8983146a");
+    let user = {
+      "email": "hugo@teste.com",
+      "password": "hugold"
+    }
+
+    let response = bcrypt.hashSync(user.password, Number.parseInt(process.env.SECRET))
+
+    // response = await login(user);
     console.log(response)
   }catch(err){
     console.log(err)

@@ -8,8 +8,8 @@ async function editControl(id, info){
 
     let editInfos = {}
 
-    if(!(info.name == undefined || info.name == "")){
-      editInfos.name = info.name
+    if(!(info.username == undefined || info.username == "")){
+      editInfos.username = info.username
     }
     if(!(info.email == undefined || info.email == "")){
       if(!info.email.match(regex)){
@@ -19,14 +19,6 @@ async function editControl(id, info){
     }
     if(!(info.password == undefined || info.password == "")){
       editInfos.password = info.password
-    }
-    if(!(info.role === undefined || info.role === "")){
-      editInfos.role = info.role
-    }
-    if(info.role == 1){
-      if(!(info.occupation === undefined || info.occupation === "")){
-        editInfos.occupation = info.occupation
-      }
     }
 
     return await editUser(id, editInfos)

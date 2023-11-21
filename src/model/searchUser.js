@@ -12,7 +12,7 @@ async function searchUser(id){
     return response;
   } catch (err) {
     await con.connection.close();
-    if (err.path == "_id") throw {status: 400, message: "Usuário não encontrado"}
+    if (err.path == "_id") throw {statusCode: 400, message: "Usuário não encontrado"}
     throw err;
   }
 }

@@ -5,21 +5,21 @@ async function signupControl(user, type){
 
   try {
     if(user.username == undefined || user.username == ""){
-      throw {status: 400, message: "Insira um nome"}
+      throw {statusCode: 400, message: "Insira um nome"}
     }
     if(user.email == undefined || user.email == ""){
-      throw {status: 400, message: "Insira um email"}
+      throw {statusCode: 400, message: "Insira um email"}
     }
     if(!user.email.match(regex)){
-      throw {status: 400, message: "Email inválido"}
+      throw {statusCode: 400, message: "Email inválido"}
     }
     if(user.password == undefined || user.password == ""){
-      throw {status: 400, message: "Insira uma senha"}
+      throw {statusCode: 400, message: "Insira uma senha"}
     }
 
     if(type === 1){
       if(user.occupation === undefined || user.occupation === ""){
-        throw {status: 400, message: "Insira o cargo"}
+        throw {statusCode: 400, message: "Insira o cargo"}
       }
     }
     

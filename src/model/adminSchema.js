@@ -1,7 +1,7 @@
 const { Schema } = require("mongoose")
 
 const adminSchema = new Schema({
-    name: {
+    username: {
       type: String,
       required: true
     },
@@ -15,15 +15,18 @@ const adminSchema = new Schema({
     },
     status: {
       type: Boolean,
-      required: true
+      required: true,
+      default: true
     },
     role: {
       type: Number,
-      required: true
+      required: true,
+      default: 1
     },
     initDate: {
       type: Date,
-      required: true
+      required: true,
+      default: new Date()
     },
     occupation: {
       type: String,
