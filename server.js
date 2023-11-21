@@ -8,6 +8,7 @@ const {editControl} = require('./src/controller/editControl')
 const {delControl} = require('./src/controller/delControl')
 const {getUsersControl} = require('./src/controller/getUsersControl')
 const {itemRegisterControl} = require('./src/controller/itemRegisterControl')
+const {itemGet} = require('./src/model/itemGet')
 
 const app = express();
 app.use(bodyParser.json());
@@ -152,6 +153,18 @@ app.get("/admin/reports", async (req, res) => {
 //Rota para listagem de usuários
 app.get("/admin/users", async (req, res) => {
   try {
+    const tokenHeader = req.headers["authorization"]
+    if(!tokenHeader) throw {
+      statusCode: 400,
+      message: "Token vazio!"
+    }
+    const token = tokenHeader.split(" ")[1]
+    if(!token) throw {
+      statusCode: 400,
+      message: "Token vazio!"
+    }
+    tokenControl(token)
+
     let response = await getUsersControl()
     res.status(200).send(response)
   } catch (err) {
@@ -181,8 +194,8 @@ app.post("/items", async (req, res) => {
 
     res.status(200).send(response)
   } catch (err) {
-    console.log(err)
-    // res.status(err.statusCode).send(err)
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
   }
 })
 
@@ -200,6 +213,8 @@ app.get("/items", async (req, res) => {
       message: "Token vazio!"
     }
     tokenControl(token)
+
+    let response = await itemGet()
     
     res.status(200).send(response)
   } catch (err) {
