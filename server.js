@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const {signupControl} = require('./src/controller/signupControl')
-const {loginControl, logout, tokenControl} = require('./src/controller/userLoginControl')
+const {loginControl, tokenControl} = require('./src/controller/userLoginControl')
 const {adminLoginControl} = require('./src/controller/adminLoginControl')
 const {editControl} = require('./src/controller/editControl')
 const {delControl} = require('./src/controller/delControl')
@@ -60,8 +60,8 @@ app.post("/users/login", async (req, res) => {
 
 //Rota para logout de usuários
 app.post("/users/logout", async (req, res) => {
-  let response = logout()
-  // res.status(response.status).send(response.message)
+  let response = {statusCode: 200, message: "Rota em ajustes"}
+  res.status(response.statusCode).send(response)
 })
 
 //Rota de edição de informações do usuário

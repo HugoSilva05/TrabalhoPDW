@@ -17,7 +17,7 @@ async function adminLogin(admin){
         statusCode: 401,
         message: "Administrador não encontrado!",
         data: {
-          email: administrador.email
+          email: admin.email
         }
       }
     }

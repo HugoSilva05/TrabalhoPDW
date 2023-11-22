@@ -32,10 +32,6 @@ async function adminLoginControl(user){
   }
 }
 
-function logout(){
-  
-}
-
 function tokenControl(token){
   try {
     return jwt.verify(token, process.env.SECRET)
@@ -47,4 +43,4 @@ function tokenControl(token){
   }
 }
 
-module.exports = {adminLoginControl, logout, tokenControl}
+module.exports = {adminLoginControl, tokenControl}
