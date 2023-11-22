@@ -17,7 +17,7 @@ const {categoryGet} = require('./src/model/categoryGet')
 const {categoryEditControl} = require('./src/controller/categoryEditControl')
 const {categoryDelete} = require('./src/model/categoryDelete')
 const {transactionRegisterControl} = require('./src/controller/transactionRegisterControl')
-
+const {transactionSearch} = require('./src/model/transactionSearch')
 
 const app = express();
 app.use(bodyParser.json());
@@ -383,6 +383,20 @@ app.post("/transactions", async (req, res) => {
 //Rota para visualizar transações de um usuário
 app.get("/transactions/:userID", async (req, res) => {
   try {
+    const tokenHeader = req.headers["authorization"]
+    if(!tokenHeader) throw {
+      statusCode: 400,
+      message: "Token vazio!"
+    }
+    const token = tokenHeader.split(" ")[1]
+    if(!token) throw {
+      statusCode: 400,
+      message: "Token vazio!"
+    }
+    tokenControl(token)
+
+    let userID = req.params.userID
+    response = await transactionSearch(userID)
     
     res.status(200).send(response)
   } catch (err) {
