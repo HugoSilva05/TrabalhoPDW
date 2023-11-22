@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
-const {userSchema} = require("./userSchema")
+const {categorySchema} = require("./categorySchema")
 const {dbConnect} = require("./dbConnect")
-const User = mongoose.model("User", userSchema)
+const Category = mongoose.model("Category", categorySchema)
 let con
 
-async function login(user){
+async function categoryGet(){
   try {
     con = await dbConnect();
-    let response = await User.find(user);
+    response = await Category.find();
     await con.connection.close();
     return response;
   } catch (err) {
@@ -16,4 +16,4 @@ async function login(user){
   }
 }
 
-module.exports = {login}
+module.exports = {categoryGet}

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const {Schema} = mongoose
 
 const userSchema = new Schema({
-  name: {
+  username: {
     type: String,
     required: true
   },
@@ -16,11 +16,13 @@ const userSchema = new Schema({
   },
   status: {
     type: Boolean,
-    required: true
+    required: true,
+    default: true
   },
   role: {
     type: Number,
-    required: true
+    required: true,
+    default: 0
   }
 }, {collection: "users", timestamps: true})
 

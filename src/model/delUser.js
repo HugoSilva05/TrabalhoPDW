@@ -11,8 +11,8 @@ async function delUser(id){
     await con.connection.close();
     return response;
   } catch (err) {
-    await con.connection.close();
-    if (err.path == "_id") throw {status: 400, message: "Usuário não encontrado"}
+    if(con) await con.connection.close();
+    if (err.path == "_id") throw {statusCode: 400, message: "Usuário não encontrado"}
     throw err;
   }
 }
