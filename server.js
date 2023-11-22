@@ -16,6 +16,8 @@ const {categoryRegisterControl} = require('./src/controller/categoryRegisterCont
 const {categoryGet} = require('./src/model/categoryGet')
 const {categoryEditControl} = require('./src/controller/categoryEditControl')
 const {categoryDelete} = require('./src/model/categoryDelete')
+const {transactionRegisterControl} = require('./src/controller/transactionRegisterControl')
+
 
 const app = express();
 app.use(bodyParser.json());
@@ -353,6 +355,22 @@ app.delete("/items/:id", async (req, res) => {
 //Rota para registrar nova transação
 app.post("/transactions", async (req, res) => {
   try {
+    const tokenHeader = req.headers["authorization"]
+    if(!tokenHeader) throw {
+      statusCode: 400,
+      message: "Token vazio!"
+    }
+    const token = tokenHeader.split(" ")[1]
+    if(!token) throw {
+      statusCode: 400,
+      message: "Token vazio!"
+    }
+    tokenControl(token)
+
+    const {buyerID, sellerID, itemID, price} = req.body //Delimita os campos que podem ser enviados na requisição
+    const item = {buyerID, sellerID, itemID, price}  //Utiliza os campos para uma transação
+    
+    let response = await transactionRegisterControl(item)
     
     res.status(200).send(response)
   } catch (err) {
