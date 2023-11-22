@@ -12,6 +12,10 @@ const {itemGet} = require('./src/model/itemGet')
 const {itemEditControl} = require('./src/controller/itemEditControl')
 const {itemDelete} = require('./src/model/itemDelete')
 const {itemSearch} = require('./src/model/itemSearch')
+const {categoryRegisterControl} = require('./src/controller/categoryRegisterControl')
+const {categoryGet} = require('./src/model/categoryGet')
+const {categoryEditControl} = require('./src/controller/categoryEditControl')
+const {categoryDelete} = require('./src/model/categoryDelete')
 
 const app = express();
 app.use(bodyParser.json());
@@ -373,7 +377,19 @@ app.get("/transactions/:userID", async (req, res) => {
 //Rota para listar categorias
 app.get("/categories", async (req, res) => {
   try {
-    
+    const tokenHeader = req.headers["authorization"]
+    if(!tokenHeader) throw {
+      statusCode: 400,
+      message: "Token vazio!"
+    }
+    const token = tokenHeader.split(" ")[1]
+    if(!token) throw {
+      statusCode: 400,
+      message: "Token vazio!"
+    }
+    tokenControl(token)
+
+    let response = await categoryGet()
     res.status(200).send(response)
   } catch (err) {
     if(err.statusCode) res.status(err.statusCode).send(err)
@@ -385,7 +401,22 @@ app.get("/categories", async (req, res) => {
 //Rota para adicionar uma categoria
 app.post("/categories", async (req, res) => {
   try {
+    const tokenHeader = req.headers["authorization"]
+    if(!tokenHeader) throw {
+      statusCode: 400,
+      message: "Token vazio!"
+    }
+    const token = tokenHeader.split(" ")[1]
+    if(!token) throw {
+      statusCode: 400,
+      message: "Token vazio!"
+    }
+    tokenControl(token)
+
+    const {name, description} = req.body //Delimita os campos que podem ser enviados na requisição
+    const category = {name, description} //Utiliza os campos para uma categoria
     
+    let response = await categoryRegisterControl(category)
     res.status(200).send(response)
   } catch (err) {
     if(err.statusCode) res.status(err.statusCode).send(err)
@@ -397,6 +428,22 @@ app.post("/categories", async (req, res) => {
 //Rota para editar uma categoria
 app.put("/categories/:id", async (req, res) => {
   try {
+    const tokenHeader = req.headers["authorization"]
+    if(!tokenHeader) throw {
+      statusCode: 400,
+      message: "Token vazio!"
+    }
+    const token = tokenHeader.split(" ")[1]
+    if(!token) throw {
+      statusCode: 400,
+      message: "Token vazio!"
+    }
+    tokenControl(token)
+
+    let id = req.params.id
+    const {name, description} = req.body //Delimita os campos que podem ser enviados na requisição
+    const category = {name, description}
+    response = await categoryEditControl(id, category)
     
     res.status(200).send(response)
   } catch (err) {
@@ -409,7 +456,21 @@ app.put("/categories/:id", async (req, res) => {
 //Rota para deletar uma categoria
 app.delete("/categories/:id", async (req, res) => {
   try {
-    
+    const tokenHeader = req.headers["authorization"]
+    if(!tokenHeader) throw {
+      statusCode: 400,
+      message: "Token vazio!"
+    }
+    const token = tokenHeader.split(" ")[1]
+    if(!token) throw {
+      statusCode: 400,
+      message: "Token vazio!"
+    }
+    tokenControl(token)
+
+    let id = req.params.id
+    response = await categoryDelete(id)
+
     res.status(200).send(response)
   } catch (err) {
     if(err.statusCode) res.status(err.statusCode).send(err)
