@@ -10,6 +10,8 @@ const {getUsersControl} = require('./src/controller/getUsersControl')
 const {itemRegisterControl} = require('./src/controller/itemRegisterControl')
 const {itemGet} = require('./src/model/itemGet')
 const {itemEditControl} = require('./src/controller/itemEditControl')
+const {itemDelete} = require('./src/model/itemDelete')
+const {itemSearch} = require('./src/model/itemSearch')
 
 const app = express();
 app.use(bodyParser.json());
@@ -29,7 +31,9 @@ app.post("/users/signup", async (req, res) => {
     let response = await signupControl(user, 0)
     res.status(201).send(response)
   } catch (err) {
-    res.status(err.statusCode).send(err)
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
+    console.log(err)
   }
 })
 
@@ -42,8 +46,9 @@ app.post("/users/login", async (req, res) => {
     let response = await loginControl(user)
     res.status(200).send(response)
   } catch (err) {
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
     console.log(err)
-    res.status(err.statusCode).send(err)
   }
 })
 
@@ -74,7 +79,9 @@ app.put("/users/:id", async (req, res) => {
     let response = await editControl(id, user)
     res.status(200).send(response)
   } catch (err) {
-    res.status(err.statusCode).send(err)
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
+    console.log(err)
   }
 })
 
@@ -97,8 +104,9 @@ app.delete("/users/:id", async (req, res) => {
     let response = await delControl(id)
     res.status(200).send(response)
   } catch (err) {
-    
-    res.status(err.statusCode).send(err)
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
+    console.log(err)
   }
   
 })
@@ -123,7 +131,9 @@ app.post("/admin/signup", async (req, res) => {
     let response = await signupControl(admin, 1)
     res.status(201).send(response)
   } catch (err) {
-    res.status(err.statusCode).send(err)
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
+    console.log(err)
   }
 })
 
@@ -136,8 +146,9 @@ app.post("/admin/login", async (req, res) => {
     let response = await adminLoginControl(admin)
     res.status(200).send(response)
   } catch (err) {
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
     console.log(err)
-    res.status(err.statusCode).send(err)
   }
 })
 
@@ -147,7 +158,9 @@ app.get("/admin/reports", async (req, res) => {
     
     res.status(200).send(response)
   } catch (err) {
-    res.status(err.statusCode).send(err)
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
+    console.log(err)
   }
 })
 
@@ -169,7 +182,9 @@ app.get("/admin/users", async (req, res) => {
     let response = await getUsersControl()
     res.status(200).send(response)
   } catch (err) {
-    res.status(err.statusCode).send(err)
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
+    console.log(err)
   }
 })
 
@@ -197,6 +212,7 @@ app.post("/items", async (req, res) => {
   } catch (err) {
     if(err.statusCode) res.status(err.statusCode).send(err)
     else res.status(400).send(err)
+    console.log(err)
   }
 })
 
@@ -219,12 +235,14 @@ app.get("/items", async (req, res) => {
     
     res.status(200).send(response)
   } catch (err) {
-    res.status(err.statusCode).send(err)
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
+    console.log(err)
   }
 })
 
-//Rota para listagem de item específico
-app.get("/items/:id", async (req, res) => {
+//Rota para buscar item
+app.get("/items/search", async (req, res) => {
   try {
     const tokenHeader = req.headers["authorization"]
     if(!tokenHeader) throw {
@@ -238,9 +256,40 @@ app.get("/items/:id", async (req, res) => {
     }
     tokenControl(token)
     
+    const {title, id, author} = req.query //Delimita os campos que podem ser enviados na requisição
+    const item = {title, id, author}
+    response = await itemSearch(item)
     res.status(200).send(response)
   } catch (err) {
-    res.status(err.statusCode).send(err)
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
+    console.log(err)
+  }
+})
+
+//Rota para busca de item específico
+app.get("/items/:id", async (req, res) => {
+  try {
+    const tokenHeader = req.headers["authorization"]
+    if(!tokenHeader) throw {
+      statusCode: 400,
+      message: "Token vazio!"
+    }
+    const token = tokenHeader.split(" ")[1]
+    if(!token) throw {
+      statusCode: 400,
+      message: "Token vazio!"
+    }
+    tokenControl(token)
+
+    let item = {}
+    item.id = req.params.id
+    response = await itemSearch(item)
+    res.status(200).send(response)
+  } catch (err) {
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
+    console.log(err)
   }
 })
 
@@ -286,31 +335,14 @@ app.delete("/items/:id", async (req, res) => {
       message: "Token vazio!"
     }
     tokenControl(token)
-    
-    res.status(200).send(response)
-  } catch (err) {
-    res.status(err.statusCode).send(err)
-  }
-})
 
-//Rota para buscar item
-app.get("/items/search", async (req, res) => {
-  try {
-    const tokenHeader = req.headers["authorization"]
-    if(!tokenHeader) throw {
-      statusCode: 400,
-      message: "Token vazio!"
-    }
-    const token = tokenHeader.split(" ")[1]
-    if(!token) throw {
-      statusCode: 400,
-      message: "Token vazio!"
-    }
-    tokenControl(token)
-    
+    let id = req.params.id
+    response = await itemDelete(id)
     res.status(200).send(response)
   } catch (err) {
-    res.status(err.statusCode).send(err)
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
+    console.log(err)
   }
 })
 
@@ -320,7 +352,9 @@ app.post("/transactions", async (req, res) => {
     
     res.status(200).send(response)
   } catch (err) {
-    res.status(err.statusCode).send(err)
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
+    console.log(err)
   }
 })
 
@@ -330,7 +364,9 @@ app.get("/transactions/:userID", async (req, res) => {
     
     res.status(200).send(response)
   } catch (err) {
-    res.status(err.statusCode).send(err)
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
+    console.log(err)
   }
 })
 
@@ -340,7 +376,9 @@ app.get("/categories", async (req, res) => {
     
     res.status(200).send(response)
   } catch (err) {
-    res.status(err.statusCode).send(err)
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
+    console.log(err)
   }
 })
 
@@ -350,7 +388,9 @@ app.post("/categories", async (req, res) => {
     
     res.status(200).send(response)
   } catch (err) {
-    res.status(err.statusCode).send(err)
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
+    console.log(err)
   }
 })
 
@@ -360,7 +400,9 @@ app.put("/categories/:id", async (req, res) => {
     
     res.status(200).send(response)
   } catch (err) {
-    res.status(err.statusCode).send(err)
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
+    console.log(err)
   }
 })
 
@@ -370,7 +412,9 @@ app.delete("/categories/:id", async (req, res) => {
     
     res.status(200).send(response)
   } catch (err) {
-    res.status(err.statusCode).send(err)
+    if(err.statusCode) res.status(err.statusCode).send(err)
+    else res.status(400).send(err)
+    console.log(err)
   }
 })
 

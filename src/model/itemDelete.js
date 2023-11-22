@@ -4,21 +4,17 @@ const {dbConnect} = require("./dbConnect")
 const Item = mongoose.model("Item", itemSchema)
 let con
 
-async function itemEdit(id, info){
+async function itemDelete(id){
   try {
     con = await dbConnect();
-    await Item.updateOne({_id: id}, info)
+    response = await Item.updateOne({_id: id}, {status: false})
     await con.connection.close();
-    return {
-      statusCode: 200,
-      message: `Item ${id} modificado`,
-      data: info
-    };
+    return response;
   } catch (err) {
     if(con) await con.connection.close();
-    if(err.path == "_id") throw {statusCode: 400, message: "Item não encontrado"}
+    if (err.path == "_id") throw {statusCode: 400, message: "Item não encontrado"}
     throw err;
   }
 }
 
-module.exports = {itemEdit}
+module.exports = {itemDelete}
